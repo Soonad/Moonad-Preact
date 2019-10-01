@@ -10,35 +10,31 @@ export interface Props {
 
 export default function CodeViewer({ module, go_to }: Props) {
   return h(
-    "code",
-    { style: { padding: "8px", overflow: "scroll", flexGrow: 1 } },
-    [
-      h(
-        "pre",
-        {},
-        module.tokens.map((token: Token) => {
-          const style = token_styles[token.type];
-          switch (token.type) {
-            case "ref":
-              return h(
-                "span",
-                { style, onClick: () => go_to(token.full_name) },
-                token.content
-              );
-            case "imp":
-              return h(
-                "span",
-                { style, onClick: () => go_to(token.content) },
-                token.content
-              );
-            default:
-              return h("span", { style }, token.content);
-          }
-        })
-      )
-    ]
+    "pre",
+    { style: pre_style },
+    module.tokens.map((token: Token) => {
+      const style = token_styles[token.type];
+      switch (token.type) {
+        case "ref":
+          return h(
+            "span",
+            { style, onClick: () => go_to(token.full_name) },
+            token.content
+          );
+        case "imp":
+          return h(
+            "span",
+            { style, onClick: () => go_to(token.content) },
+            token.content
+          );
+        default:
+          return h("span", { style }, token.content);
+      }
+    })
   );
 }
+
+const pre_style = { margin: 0 };
 
 const token_styles = {
   txt: {

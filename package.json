@@ -56,8 +56,7 @@
     "formality-lang": "^0.3.133",
     "mobx": "^5.13.1",
     "mobx-preact": "^3.0.0",
-    "preact": "^8.5.2",
-    "preact-compat": "^3.18.4",
+    "preact": "^10.0.0-rc.3",
     "preact-render-to-string": "^4.1.0"
   },
   "peerDependencies": {

@@ -1,11 +1,9 @@
 import { Component, h } from "preact";
 
-import { AppState } from "../view_model";
+import { RootViewModel } from "../view_model";
 
 import { Box } from "./Layout";
 import Root from "./Root";
-
-console.log("lalalaa");
 
 if ((module as any).hot) {
   // tslint:disable-next-line:no-var-requires
@@ -13,10 +11,10 @@ if ((module as any).hot) {
 }
 
 export default class App extends Component {
-  private appState = new AppState();
+  private root_view_model = new RootViewModel();
   public render() {
     return h(Box, { vertical: true, root: true }, [
-      h(Root, { appState: this.appState })
+      h(Root, { root_view_model: this.root_view_model })
     ]);
   }
 }

@@ -9,7 +9,6 @@ export interface LoadedState {
 export interface LoadingState {
   stage: "loading";
   loading_path: string;
-  module?: Module; // Previous loaded module
 }
 
 export interface FailedState {
@@ -20,13 +19,13 @@ export interface FailedState {
 export type State = LoadingState | LoadedState | FailedState;
 
 const default_path = "Root@0";
-
-const module_loader = new ModuleLoader();
-
 const module_regex = /^[^@]+@\d+$/;
+const term_regex = /^(?<mod>[^@]+@\d+)(\/.*)?$/;
 
-export class AppState {
+export class RootViewModel {
   @observable public state: State;
+
+  private module_loader = new ModuleLoader();
 
   constructor() {
     const in_browser = typeof window !== "undefined";
@@ -53,13 +52,16 @@ export class AppState {
   }
 
   public go_to = async (path_or_term: string) => {
-    const path = path_or_term.replace(new RegExp("/.*$"), "");
+    const match = term_regex.exec(path_or_term);
+
+    if (!match || !match.groups || !match.groups.mod) return;
+
+    const path = match.groups.mod;
 
     if (this.state.stage !== "loading") {
       this.state = {
         stage: "loading",
-        loading_path: path,
-        ...(this.state.stage === "success" ? { module: this.state.module } : {})
+        loading_path: path
       };
     }
 
@@ -75,7 +77,7 @@ export class AppState {
 
   private async load(path: string) {
     try {
-      const loaded_module = await module_loader.load(path);
+      const loaded_module = await this.module_loader.load(path);
       this.state = { stage: "success", module: loaded_module };
     } catch {
       this.state = { stage: "failed", path };

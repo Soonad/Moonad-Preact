@@ -1,4 +1,4 @@
-import { ComponentChildren, h, PreactHTMLAttributes } from "preact";
+import { ComponentChildren, JSX, h } from "preact";
 
 // Modules to help with layouting
 
@@ -47,7 +47,7 @@ const Layout = (props: LayoutProps) =>
   h(Box, { vertical: true, style: base_style }, [
     h("div", { style: header_style }, props.header_components),
     h(Box, { vertical: false }, [
-      h(Box, {}, [props.main]),
+      h(Box, { style: main_style }, [props.main]),
       h(
         Box,
         { vertical: true, style: sidebar_style, grow: false },
@@ -81,6 +81,12 @@ const sidebar_style = {
   borderLeft: "1px dashed gray",
   padding: "8px",
   fontSize: "14px"
+};
+
+const main_style = {
+  padding: "8px",
+  overflow: "scroll",
+  flexGrow: 1
 };
 
 const sidebar_title_style = {
