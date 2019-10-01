@@ -5,6 +5,8 @@ import { AppState } from "../view_model";
 import { Box } from "./Layout";
 import Root from "./Root";
 
+console.log("lalalaa");
+
 if ((module as any).hot) {
   // tslint:disable-next-line:no-var-requires
   require("preact/debug");

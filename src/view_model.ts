@@ -17,7 +17,7 @@ export interface FailedState {
   path: string;
 }
 
-type State = LoadingState | LoadedState | FailedState;
+export type State = LoadingState | LoadedState | FailedState;
 
 const default_path = "Root@0";
 

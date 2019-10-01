@@ -3,7 +3,7 @@ import { ComponentChildren, h, PreactHTMLAttributes } from "preact";
 // Modules to help with layouting
 
 interface StyleArgs {
-  vertical: boolean;
+  vertical?: boolean;
   root?: boolean;
   grow?: boolean;
 }
@@ -35,35 +35,30 @@ export const Box = (props: BoxProps) =>
     props.children || []
   );
 
-interface SidebarComponents {
-  [key: string]: JSX.Element;
-}
+type SidebarComponents = [string, JSX.Element][];
 
-interface LayoutProps {
+export interface LayoutProps {
   main: JSX.Element;
-  sidebar_components?: SidebarComponents;
-  header_components?: ComponentChildren;
+  sidebar_components: SidebarComponents;
+  header_components: ComponentChildren;
 }
 
 const Layout = (props: LayoutProps) =>
   h(Box, { vertical: true, style: base_style }, [
-    h("div", { style: header_style }, props.header_components || []),
+    h("div", { style: header_style }, props.header_components),
     h(Box, { vertical: false }, [
-      props.main,
+      h(Box, {}, [props.main]),
       h(
         Box,
         { vertical: true, style: sidebar_style, grow: false },
-        render_sidebar_components(props.sidebar_components || {})
+        render_sidebar_components(props.sidebar_components)
       )
     ])
   ]);
 
 const render_sidebar_components = (components: SidebarComponents) =>
-  Object.keys(components).map(key =>
-    h("div", {}, [
-      h("h3", { style: sidebar_title_style }, key),
-      components[key]
-    ])
+  components.map(([title, component]) =>
+    h("div", {}, [h("h3", { style: sidebar_title_style }, title), component])
   );
 
 export default Layout;
