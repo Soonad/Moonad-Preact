@@ -16,14 +16,14 @@ export interface FailedState {
   path: string;
 }
 
-export type State = LoadingState | LoadedState | FailedState;
+export type ModuleState = LoadingState | LoadedState | FailedState;
 
 const default_path = "Root@0";
 const module_regex = /^[^@]+@\d+$/;
 const term_regex = /^(?<mod>[^@]+@\d+)(\/.*)?$/;
 
 export class RootViewModel {
-  @observable public state: State;
+  @observable public module_state: ModuleState;
 
   private module_loader = new ModuleLoader();
 
@@ -38,7 +38,7 @@ export class RootViewModel {
       ? path_from_location
       : default_path;
 
-    this.state = { stage: "loading", loading_path: initial_path };
+    this.module_state = { stage: "loading", loading_path: initial_path };
     this.load(initial_path);
 
     if (in_browser) {
@@ -58,8 +58,8 @@ export class RootViewModel {
 
     const path = match.groups.mod;
 
-    if (this.state.stage !== "loading") {
-      this.state = {
+    if (this.module_state.stage !== "loading") {
+      this.module_state = {
         stage: "loading",
         loading_path: path
       };
@@ -78,9 +78,9 @@ export class RootViewModel {
   private async load(path: string) {
     try {
       const loaded_module = await this.module_loader.load(path);
-      this.state = { stage: "success", module: loaded_module };
+      this.module_state = { stage: "success", module: loaded_module };
     } catch {
-      this.state = { stage: "failed", path };
+      this.module_state = { stage: "failed", path };
     }
   }
 }
