@@ -75,6 +75,7 @@ const sidebar_style = {
   background: "#f0f0f0",
   borderLeft: "1px dashed gray",
   padding: "8px",
+  flex: "0 1 auto",
   fontSize: "14px"
 };
 
