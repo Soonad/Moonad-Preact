@@ -21,8 +21,10 @@ export default function(config, env, helpers) {
     "index"
   );
 
-  config.devServer.historyApiFallback = {
-    disableDotRule: true
+  if(config.devServer){
+    config.devServer.historyApiFallback = {
+      disableDotRule: true
+    }
   }
 
   return config;

@@ -89,6 +89,7 @@ export default class Root extends Component<RootProps> {
     edit,
     editing_state,
     module_state,
+    publish,
     save
   }: RootViewModel): JSX.Element[] {
     if (editing_state.editing) {
@@ -97,7 +98,18 @@ export default class Root extends Component<RootProps> {
 
     if (module_state.stage === "success") {
       const edit_action = action("✏️", edit);
-      // TODO: Add publish action
+      const publish_action = action("📄", () => {
+        // TODO: Use a proper modal input
+        const name = prompt("Name:");
+        if (name) {
+          publish(name);
+        }
+      });
+
+      if (module_state.module.path === "local") {
+        return [publish_action, edit_action];
+      }
+
       return [edit_action];
     }
 

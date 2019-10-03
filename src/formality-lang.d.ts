@@ -16,6 +16,7 @@ declare module "formality-lang" {
   module lang {
     function load_file(path: string): Promise<string>;
     function load_file_parents(path: string): Promise<string[]>;
+    function save_file(name: string, code: string): Promise<string>;
 
     // Typing only what we use
     function parse(

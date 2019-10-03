@@ -1,4 +1,5 @@
 import fm, { Defs } from "formality-lang";
+import Either, { left, right } from "./utils/Either";
 
 export interface SimpleToken {
   type: "txt" | "sym" | "cmm" | "num" | "var" | "imp" | "doc";
@@ -62,6 +63,17 @@ export class ModuleLoader {
       term: this.get_term(defs),
       tokens: this.build_tokens(tokens)
     };
+  }
+
+  public async publish(
+    name: string,
+    code: string
+  ): Promise<Either<string, string>> {
+    try {
+      return right(await fm.lang.save_file(name, code));
+    } catch (e) {
+      return left(e.toString());
+    }
   }
 
   private get_term = (defs: Defs) => (name: string) => {

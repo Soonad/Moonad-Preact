@@ -23,8 +23,8 @@ export interface NotEditingState {
 }
 
 const default_path = "Root@0";
-const module_regex = /^[^@]+@\d+$/;
-const term_regex = /^(?<mod>[^@]+@\d+)(\/.*)?$/;
+const module_regex = /^[a-zA-Z_\.-@]+@\d+$/;
+const term_regex = /^(?<mod>[a-zA-Z_\.-@]+@\d+)(\/.*)?$/;
 const in_browser = typeof window !== "undefined";
 
 const get_initial_path = () => {
@@ -79,17 +79,42 @@ export default class RootViewModel {
     }
   };
 
+  public publish = async (name: string) => {
+    if (
+      this.module_state.stage !== "success" ||
+      this.module_state.module.path !== "local"
+    ) {
+      return;
+    }
+
+    console.log(name);
+    const eitherPath = await this.module_loader.publish(
+      name,
+      this.module_state.module.code
+    );
+
+    if (eitherPath.isRight) {
+      await this.go_to(eitherPath.right);
+    } else {
+      // TODO: Maybe generalize the way error is reported (same as when loading a module)
+      alert(eitherPath.left);
+    }
+  };
+
   public cancel_editing = () => {
     this.editing_state = { editing: false };
   };
 
-  public save = () => {
+  public save = async () => {
     if (!this.editing_state.editing) {
       return;
     }
 
-    this.load_local(this.editing_state.code);
+    const code = this.editing_state.code;
     this.editing_state = { editing: false };
+
+    await this.load_local(code);
+    window.history.pushState({}, "local", "/");
   };
 
   private on_pop_state = (e: PopStateEvent) => {
