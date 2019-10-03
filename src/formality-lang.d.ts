@@ -1,12 +1,19 @@
 declare module "formality-lang" {
+  // Do not type AST for now.
+  type AST = {};
+
+  interface Defs {
+    [key: string]: AST;
+  }
+
+  function exec(
+    term_name: string,
+    defs: Defs,
+    mode: "TYPE" | "DEBUG",
+    opts: any
+  ): string;
+
   module lang {
-    // Do not type AST for now.
-    type AST = {};
-
-    interface Defs {
-      [key: string]: AST;
-    }
-
     function load_file(path: string): Promise<string>;
     function load_file_parents(path: string): Promise<string[]>;
 
@@ -19,5 +26,7 @@ declare module "formality-lang" {
       defs: Defs;
       tokens: string[][];
     }>;
+
+    function show(ast: AST): string;
   }
 }

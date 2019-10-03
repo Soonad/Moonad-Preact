@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { Module, Token } from "../model";
+import { Module, Token, Term } from "../model";
 
 type GoToCallback = (module_or_term: string) => any;
 
@@ -27,12 +27,37 @@ export default function CodeViewer({ module, go_to }: Props) {
             { style, onClick: () => go_to(token.content) },
             token.content
           );
+        case "def":
+          return h(
+            "span",
+            {
+              style,
+              onClick: () => {
+                const term = module.term(token.full_name);
+                alert(format_term(term));
+              }
+            },
+            token.content
+          );
         default:
           return h("span", { style }, token.content);
       }
     })
   );
 }
+
+const format_term = ({ type, value }: Term): string =>
+  `
+  :: Type ::
+  ${type.checked ? `✓ ${type.value}` : `✗ ${type.error}`}
+
+  :: Output ::
+  ${value}
+  `
+    .trim()
+    .split("\n")
+    .map(x => x.trim())
+    .join("\n");
 
 const pre_style = { margin: 0 };
 

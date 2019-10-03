@@ -30,11 +30,11 @@ export default function PathBar({ path, go_to }: Props) {
     window.setTimeout(() => input_ref.current && input_ref.current.focus());
   };
 
-  const onInput = (e: InputEvent) => {
-    if (e.target && state.editing) {
-      // TODO: How to type that?
-      let el: any = e.target;
-      setState({ editing: true, path: el.value });
+  const onInput = (e: Event) => {
+    const evt = e as InputEvent;
+    if (evt.target && state.editing) {
+      let element = evt.target as HTMLInputElement;
+      setState({ editing: true, path: element.value });
     }
   };
 

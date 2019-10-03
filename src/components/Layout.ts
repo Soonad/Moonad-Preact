@@ -8,13 +8,12 @@ interface StyleArgs {
   grow?: boolean;
 }
 
-const flexContainer = ({ vertical }: StyleArgs) => ({
+const style = (args: StyleArgs) => ({
   display: "flex",
-  flexFlow: `${vertical ? "column" : "row"} nowrap`
+  flexFlow: `${args.vertical ? "column" : "row"} nowrap`,
+  ...(args.root ? { width: "100%", height: "100%" } : {}),
+  ...(!args.root && !args.grow ? { flex: "1" } : {})
 });
-
-const spread = ({ root, grow }: StyleArgs) =>
-  root ? { width: "100%", height: "100%" } : grow !== false ? { flex: 1 } : {};
 
 interface BoxProps extends StyleArgs {
   children?: ComponentChildren;
@@ -26,16 +25,12 @@ export const Box = (props: BoxProps) =>
   h(
     "div",
     {
-      style: {
-        ...flexContainer(props),
-        ...spread(props),
-        ...props.style
-      }
+      style: { ...style(props), ...props.style }
     },
     props.children || []
   );
 
-type SidebarComponents = [string, JSX.Element][];
+export type SidebarComponents = [string, JSX.Element][];
 
 export interface LayoutProps {
   main: JSX.Element;

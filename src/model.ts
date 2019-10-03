@@ -13,11 +13,27 @@ export interface TermToken {
 
 export type Token = SimpleToken | TermToken;
 
+export interface TypeChecked {
+  checked: true;
+  value: string;
+}
+
+export interface TypeNotChecked {
+  checked: false;
+  error: string;
+}
+
+export interface Term {
+  type: TypeChecked | TypeNotChecked;
+  value: string;
+}
+
 export interface Module {
   path: string;
   parents: string[];
   tokens: Token[];
   code: string;
+  term: (term_name: string) => Term;
 }
 
 export class ModuleLoader {
@@ -31,6 +47,23 @@ export class ModuleLoader {
       path,
       code,
       parents,
+      term: (name: string) => {
+        // TODO: Model non type-checking results
+        const value = fm.lang.show(defs[name]);
+        const type = (() => {
+          try {
+            const value = fm.lang.show(fm.exec(name, defs, "TYPE", {}));
+            return { checked: true, value };
+          } catch (e) {
+            const error = e
+              .toString()
+              .replace(/\[[0-9]m/g, "")
+              .replace(/\[[0-9][0-9]m/g, "");
+            return { checked: false, error };
+          }
+        })();
+        return { value, type };
+      },
       tokens: tokens.map(
         ([type, content, full_name]): Token => {
           switch (type) {

@@ -1,12 +1,12 @@
 import { observer } from "mobx-preact";
-import { Component, h } from "preact";
+import { Component, JSX, h } from "preact";
 
 import { Module } from "../model";
-import { RootViewModel, State } from "../view_model";
+import { RootViewModel, ModuleState } from "../view_model";
 
 import CitedBy from "./CitedBy";
 import CodeViewer from "./CodeViewer";
-import Layout, { LayoutProps } from "./Layout";
+import Layout, { LayoutProps, SidebarComponents } from "./Layout";
 import PathBar from "./PathBar";
 
 interface RootProps {
@@ -30,25 +30,31 @@ export default class Root extends Component<RootProps> {
     });
   }
 
-  private per_state(app_state: RootViewModel): LayoutProps {
-    const { state, go_to } = app_state;
-    switch (state.stage) {
+  private per_state(
+    root_view_model: RootViewModel
+  ): {
+    main: JSX.Element;
+    path: string;
+    sidebar_components?: SidebarComponents;
+  } {
+    const { module_state, go_to } = root_view_model;
+    switch (module_state.stage) {
       case "failed":
         return {
-          path: state.path,
-          main: h("div", {}, `Failed to load ${state.path}`)
+          path: module_state.path,
+          main: h("div", {}, `Failed to load ${module_state.path}`)
         };
       case "loading":
         return {
-          path: state.loading_path,
+          path: module_state.loading_path,
           main: h("div", {}, "Loading...")
         };
       case "success":
         return {
-          path: state.module.path,
-          main: h(CodeViewer, { module: state.module, go_to }),
+          path: module_state.module.path,
+          main: h(CodeViewer, { module: module_state.module, go_to }),
           sidebar_components: [
-            ["Cited By", h(CitedBy, { module: state.module, go_to })]
+            ["Cited By", h(CitedBy, { module: module_state.module, go_to })]
           ]
         };
     }
