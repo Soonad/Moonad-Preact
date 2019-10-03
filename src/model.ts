@@ -50,7 +50,7 @@ export class ModuleLoader {
       term: (name: string) => {
         // TODO: Model non type-checking results
         const value = fm.lang.show(defs[name]);
-        const type = (() => {
+        const type = ((): TypeChecked | TypeNotChecked => {
           try {
             const value = fm.lang.show(fm.exec(name, defs, "TYPE", {}));
             return { checked: true, value };
