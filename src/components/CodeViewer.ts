@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { Module, Token, Term } from "../model";
+import { Module, Term, Token } from "../model";
 
 type GoToCallback = (module_or_term: string) => any;
 

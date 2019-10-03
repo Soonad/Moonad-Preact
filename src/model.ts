@@ -1,4 +1,4 @@
-import fm from "formality-lang";
+import fm, { Defs } from "formality-lang";
 
 export interface SimpleToken {
   type: "txt" | "sym" | "cmm" | "num" | "var" | "imp" | "doc";
@@ -37,64 +37,81 @@ export interface Module {
 }
 
 export class ModuleLoader {
+  public async load_local(code: string): Promise<Module> {
+    const { defs, tokens } = await fm.lang.parse("local", code, true);
+
+    return {
+      code,
+      path: "local",
+      parents: [],
+      term: this.get_term(defs),
+      tokens: this.build_tokens(tokens)
+    };
+  }
+
   public async load(path: string): Promise<Module> {
     const [{ code, defs, tokens }, parents] = await Promise.all([
-      this.load_code(path),
+      this.load_code_from_path(path),
       this.load_parents(path)
     ]);
 
     return {
-      path,
       code,
+      path,
       parents,
-      term: (name: string) => {
-        // TODO: Model non type-checking results
-        const value = fm.lang.show(defs[name]);
-        const type = ((): TypeChecked | TypeNotChecked => {
-          try {
-            const value = fm.lang.show(fm.exec(name, defs, "TYPE", {}));
-            return { checked: true, value };
-          } catch (e) {
-            const error = e
-              .toString()
-              .replace(/\[[0-9]m/g, "")
-              .replace(/\[[0-9][0-9]m/g, "");
-            return { checked: false, error };
-          }
-        })();
-        return { value, type };
-      },
-      tokens: tokens.map(
-        ([type, content, full_name]): Token => {
-          switch (type) {
-            case "txt":
-              return { type, content };
-            case "sym":
-              return { type, content };
-            case "cmm":
-              return { type, content };
-            case "num":
-              return { type, content };
-            case "var":
-              return { type, content };
-            case "imp":
-              return { type, content };
-            case "doc":
-              return { type, content };
-            case "ref":
-              return { type, content, full_name };
-            case "def":
-              return { type, content, full_name };
-            // Fallback to txt token
-            default:
-              return { type: "txt", content };
-          }
-        }
-      )
+      term: this.get_term(defs),
+      tokens: this.build_tokens(tokens)
     };
   }
 
-  private async load_code(path: string) {
+  private get_term = (defs: Defs) => (name: string) => {
+    const value = fm.lang.show(defs[name]);
+    const type = ((): TypeChecked | TypeNotChecked => {
+      try {
+        const type_value = fm.lang.show(fm.exec(name, defs, "TYPE", {}));
+        return { checked: true, value: type_value };
+      } catch (e) {
+        const error = e
+          .toString()
+          .replace(/\[[0-9]m/g, "")
+          .replace(/\[[0-9][0-9]m/g, "");
+        return { checked: false, error };
+      }
+    })();
+    return { value, type };
+  };
+
+  private build_tokens(tokens: string[][]): Token[] {
+    return tokens.map(
+      ([type, content, full_name]): Token => {
+        switch (type) {
+          case "txt":
+            return { type, content };
+          case "sym":
+            return { type, content };
+          case "cmm":
+            return { type, content };
+          case "num":
+            return { type, content };
+          case "var":
+            return { type, content };
+          case "imp":
+            return { type, content };
+          case "doc":
+            return { type, content };
+          case "ref":
+            return { type, content, full_name };
+          case "def":
+            return { type, content, full_name };
+          // Fallback to txt token
+          default:
+            return { type: "txt", content };
+        }
+      }
+    );
+  }
+
+  private async load_code_from_path(path: string) {
     const code = await fm.lang.load_file(path);
     const { defs, tokens } = await fm.lang.parse(path, code, true);
     return { code, defs, tokens };

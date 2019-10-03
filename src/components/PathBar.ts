@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { useState, useRef } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 import { Module, Token } from "../model";
 
 type GoToCallback = (module_or_term: string) => any;
@@ -33,7 +33,7 @@ export default function PathBar({ path, go_to }: Props) {
   const onInput = (e: Event) => {
     const evt = e as InputEvent;
     if (evt.target && state.editing) {
-      let element = evt.target as HTMLInputElement;
+      const element = evt.target as HTMLInputElement;
       setState({ editing: true, path: element.value });
     }
   };

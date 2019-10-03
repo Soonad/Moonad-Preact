@@ -1,6 +1,6 @@
 import { Component, h } from "preact";
 
-import { RootViewModel } from "../view_model";
+import RootViewModel from "../view_model/RootViewModel";
 
 import { Box } from "./Layout";
 import Root from "./Root";
