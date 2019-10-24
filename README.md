@@ -8,6 +8,8 @@
 
 - `npm run dev`: Run a development, HMR server
 
+- `npm run watch`: Watches TypeScript files for type errors.
+
 - `npm run serve`: Run a production-like server
 
 - `npm run build`: Production-ready build

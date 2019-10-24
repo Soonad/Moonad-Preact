@@ -55,10 +55,12 @@ const Layout = (props: LayoutProps) =>
     ])
   ]);
 
-function* intersperse<T>(a: T[], delim: T): Generator<T> {
+function* intersperse<T>(a: T[], delim: T): IterableIterator<T> {
   let first = true;
   for (const x of a) {
-    if (!first) { yield delim; }
+    if (!first) {
+      yield delim;
+    }
     first = false;
     yield x;
   }

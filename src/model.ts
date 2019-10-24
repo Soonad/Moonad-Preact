@@ -46,7 +46,7 @@ export class ModuleLoader {
       path: "local",
       parents: [],
       term: this.get_term(defs),
-      tokens: this.build_tokens(tokens)
+      tokens: this.build_tokens(tokens || [])
     };
   }
 
@@ -61,7 +61,7 @@ export class ModuleLoader {
       path,
       parents,
       term: this.get_term(defs),
-      tokens: this.build_tokens(tokens)
+      tokens: this.build_tokens(tokens || [])
     };
   }
 
