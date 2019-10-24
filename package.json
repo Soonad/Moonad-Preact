@@ -10,7 +10,8 @@
     "build": "preact build",
     "serve": "preact build && preact serve",
     "dev": "preact watch",
-    "watch": "tsc --watch --noEmit --project './tsconfig.json'",
+    "typecheck": "tsc --noEmit --project './tsconfig.json'",
+    "typewatch": "tsc --watch --noEmit --project './tsconfig.json'",
     "lint": "tslint --project .",
     "test": "jest ./tests",
     "precommit": "lint-staged"

@@ -8,7 +8,9 @@
 
 - `npm run dev`: Run a development, HMR server
 
-- `npm run watch`: Watches TypeScript files for type errors.
+- `npm run typewatch`: Watches TypeScript files for type errors.
+
+- `npm run typecheck`: Check TypeScript files for type errors.
 
 - `npm run serve`: Run a production-like server
 
