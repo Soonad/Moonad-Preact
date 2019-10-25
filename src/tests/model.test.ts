@@ -39,11 +39,40 @@ describe("ModuleLoader", () => {
     expect(result.tokens).toEqual(expectedTokens);
   });
 
-  test("Can load an existing local path", async () => {
+  test("Can load Root file", async () => {
     const result = await moduleLoader.load('Root@0');
     expect(result.code).not.toBeNull();
   });
 
+  test("Can publish file", async () => {
+    const fm_code = {
+      name: "testLocal",
+      code: "the_answer_test : Word 42"
+    }
+    const result = await moduleLoader.publish(fm_code.name, fm_code.code);
+    expect(result.isRight).toBe(true);
+  });
+
+  test("Can catch error when publishing file", async () => {
+    const fm_code = {
+      name: "",
+      code: "the_answer_test : Word 42"
+    }
+    try {
+      await moduleLoader.publish(fm_code.name, fm_code.code);
+    } catch (e) {
+      expect(e).toMatch('error');
+    }
+  });
+
+  test("Can catch formatted error when publishing file", async () => {
+    const fm_code = {
+      name: "",
+      code: "the_answer_test : Word 42"
+    }
+    const result = await moduleLoader.publish(fm_code.name, fm_code.code);
+    expect(result.isRight).toBe(false);
+  });
 
 
 });
