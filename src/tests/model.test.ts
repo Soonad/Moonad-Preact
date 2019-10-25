@@ -1,3 +1,4 @@
+import { async } from "q";
 import { ModuleLoader, Token } from "../model";
 
 describe("ModuleLoader", () => {
@@ -37,4 +38,12 @@ describe("ModuleLoader", () => {
 
     expect(result.tokens).toEqual(expectedTokens);
   });
+
+  test("Can load an existing local path", async () => {
+    const result = await moduleLoader.load('Root@0');
+    expect(result.code).not.toBeNull();
+  });
+
+
+
 });

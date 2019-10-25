@@ -2,3 +2,4 @@ node_modules
 /build
 /*.log
 fm_modules/
+.DS_Store
