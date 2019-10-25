@@ -72,7 +72,11 @@ export class ModuleLoader {
     try {
       return right(await fm.lang.save_file(name, code));
     } catch (e) {
-      return left(e.toString());
+      if (e !== undefined) {
+        return left(e.toString());
+      } 
+        return left("Error when publishing file")
+      
     }
   }
 
