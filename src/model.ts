@@ -38,8 +38,17 @@ export interface Module {
 }
 
 export class ModuleLoader {
+  private load_file: fm.forall.Loader = fm.forall.with_local_storage_cache(
+    fm.forall.load_file
+  );
+
   public async load_local(code: string): Promise<Module> {
-    const { defs, tokens } = await fm.lang.parse("local", code, true);
+    const { defs, tokens } = await fm.lang.parse(
+      "local",
+      code,
+      true,
+      this.load_file
+    );
 
     return {
       code,
@@ -70,7 +79,7 @@ export class ModuleLoader {
     code: string
   ): Promise<Either<string, string>> {
     try {
-      return right(await fm.lang.save_file(name, code));
+      return right(await fm.forall.save_file(name, code));
     } catch (e) {
       return left(e.toString());
     }
@@ -124,12 +133,17 @@ export class ModuleLoader {
   }
 
   private async load_code_from_path(path: string) {
-    const code = await fm.lang.load_file(path);
-    const { defs, tokens } = await fm.lang.parse(path, code, true);
+    const code = await this.load_file(path);
+    const { defs, tokens } = await fm.lang.parse(
+      path,
+      code,
+      true,
+      this.load_file
+    );
     return { code, defs, tokens };
   }
 
   private async load_parents(path: string) {
-    return await fm.lang.load_file_parents(path);
+    return await fm.forall.load_file_parents(path);
   }
 }

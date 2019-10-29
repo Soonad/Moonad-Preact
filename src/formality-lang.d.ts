@@ -4,6 +4,7 @@ declare module "formality-lang" {
   import net from "formality-lang/fm-net";
   import to_js from "formality-lang/fm-to-js";
   import to_net from "formality-lang/fm-to-net";
+  import forall from "formality-lang/forall";
 
   function exec(
     term_name: string,
@@ -12,7 +13,7 @@ declare module "formality-lang" {
     opts: any
   ): Term;
 
-  export { Defs, core, lang, net, to_net, to_js, exec };
+  export { Defs, core, lang, net, to_net, to_js, exec, forall };
 }
 
 declare module "formality-lang/fm-core" {
@@ -280,6 +281,8 @@ declare module "formality-lang/fm-lang" {
     erase
   } from "formality-lang/fm-core";
 
+  import { Loader } from "formality-lang/forall";
+
   interface Adt {
     adt_pram: [string, Term, boolean][];
     adt_indx: [string, Term, boolean][];
@@ -321,6 +324,7 @@ declare module "formality-lang/fm-lang" {
     file: string,
     code: string,
     tokenify: boolean,
+    loader?: Loader,
     root?: boolean,
     loaded?: { [key: string]: Parsed }
   ): Promise<Parsed>;
@@ -335,9 +339,6 @@ declare module "formality-lang/fm-lang" {
 
   function show(ast: Term): string;
   function gen_name(n: number): string;
-  function load_file(path: string): Promise<string>;
-  function load_file_parents(path: string): Promise<string[]>;
-  function save_file(name: string, code: string): Promise<string>;
 
   function derive_adt_type(file: string, adt: Adt): Term;
   function derive_adt_ctor(file: string, adt: Adt, c: number): Term;
@@ -391,10 +392,31 @@ declare module "formality-lang/fm-lang" {
     replace_refs,
     derive_adt_type,
     derive_adt_ctor,
-    save_file,
-    load_file,
-    load_file_parents,
     version
+  };
+}
+
+declare module "formality-lang/forall" {
+  function load_file_parents(path: string): Promise<string[]>;
+  function save_file(name: string, code: string): Promise<string>;
+
+  type Loader = (path: string) => Promise<string>;
+  const load_file: Loader;
+  const with_file_system_cache: (
+    loader: Loader,
+    cache_dir_path?: string
+  ) => Loader;
+  const with_local_files: (loader: Loader, local_dir_path?: string) => Loader;
+  const with_local_storage_cache: (loader: Loader, prefix?: string) => Loader;
+
+  export {
+    Loader,
+    load_file_parents,
+    load_file,
+    save_file,
+    with_file_system_cache,
+    with_local_files,
+    with_local_storage_cache
   };
 }
 
