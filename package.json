@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "anser": "^1.4.8",
-    "formality-lang": "^0.3.133",
+    "formality-lang": "github:moonad/Formality#fix/variable-redeclaration",
     "mobx": "^5.13.1",
     "mobx-preact": "^3.0.0",
     "preact": "^10.0.0-rc.3",
