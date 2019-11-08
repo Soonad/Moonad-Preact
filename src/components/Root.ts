@@ -8,6 +8,7 @@ import CitedBy from "./CitedBy";
 import CodeEditor from "./CodeEditor";
 import CodeViewer from "./CodeViewer";
 import ErrorReport from "./ErrorReport";
+import Header from "./Header";
 import Layout, { LayoutProps, SidebarComponents } from "./Layout";
 import PathBar from "./PathBar";
 
@@ -20,7 +21,7 @@ export default class Root extends Component<RootProps> {
   public render() {
     return h(Layout, {
       main_components: this.main_components(this.props.root_view_model),
-      header_components: this.header_components(this.props.root_view_model),
+      header_components: [Header(this.props.root_view_model.go_to)],
       sidebar_components: this.sidebar_components(this.props.root_view_model)
     });
   }

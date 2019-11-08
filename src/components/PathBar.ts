@@ -50,24 +50,33 @@ export default function PathBar({ path, go_to }: Props) {
       style: input_style,
       value: state.path,
       ref: input_ref,
-      placeholder: "Go To...",
+      placeholder: "Go to...",
       onBlur,
       onKeyPress,
-      onInput
+      onInput,
     });
   }
 
-  return h("span", { style, onClick }, path);
+  return h("div", { style, onClick }, path);
 }
 
-const style = { flexGrow: 1 };
+const style = { 
+  heigth: "30px", 
+  width: "40%", 
+  color: "#FFFFFF",
+  marginLeft: "30px",
+  marginTop: "35px",
+  fontSize: "16px",
+};
 
 const input_style = {
   ...style,
   outline: "none",
   marginRight: "6px",
-  padding: "0",
+  padding: "5px",
   fontFamily: "monospace",
-  fontSize: "16px",
-  border: "1px dashed #ddd"
+  border: "1px #ddd",
+  marginLeft: "20px",
+  marginTop: "20px",
+  marginBottom: "20px",
 };

@@ -40,7 +40,7 @@ export interface LayoutProps {
 
 const Layout = (props: LayoutProps) =>
   h(Box, { vertical: true, style: base_style }, [
-    h("div", { style: header_style }, props.header_components),
+    props.header_components,
     h(Box, { vertical: false, style: body_style }, [
       h(
         Box,
