@@ -1,18 +1,26 @@
-import { Component, h, JSX } from "preact";
+import { h } from "preact";
 import LayoutConstants from "../assets/LayoutConstants";
-import logo from "../assets/Moonad_WHITE.png";
-import RootViewModel from "../view_model/RootViewModel";
+import Button from "./Button";
 import PathBar from "./PathBar";
+
+import fork_icon from "../assets/icons/icon_fork.png";
+import inspect_icon from "../assets/icons/icon_inspect.png";
+import logo from "../assets/Moonad_WHITE_Symbol.png";
 
 const default_path = "Base@0";
 
 type GoToCallback = (module_or_term: string) => any;
 
 export default function Header(callback: GoToCallback) {
-  return h("div", {style: header_style}, 
-    h("img", {style: logo_style, src: logo, alt: "logo"}), 
-    h("div", {style: {width: "50", backgroundColor: LayoutConstants.secondary_color}}),
-    h(PathBar, { path: default_path, go_to: callback })
+  return h("div", {style: header_style},
+    h("div", {style: {flexDirection: "row", display: "flex"}}, [
+      h("img", {style: logo_style, src: logo, alt: "logo"}), 
+      h(PathBar, { path: default_path, go_to: callback }),
+    ]),
+    h("div", {style: {display: "flex", flexDirection: "row"}}), [
+      h(Button, {title: "INSPECT", icon: inspect_icon, onClick: () => {console.log("Open inspect!")}} ),
+      h(Button, {title: "FORK", icon: fork_icon, onClick: () => {console.log("Now fork!")}} )
+    ]
   );
 }
 
@@ -21,12 +29,13 @@ const header_style = {
   height: "72px",
   backgroundColor: LayoutConstants.primary_color,
   display: "flex",
-  flexDirection: "row"
+  flexDirection: "row",
+  justifyContent: "space-between"
 }
 
 const logo_style = {
   width: "50px",
-  height: "30px",
-  marginTop: 20,
+  height: "40px",
+  marginTop: 15,
   marginLeft: 30
 }

@@ -8,7 +8,7 @@ export interface Props {
   go_to: GoToCallback;
 }
 
-export default function CodeViewer({ module: { parents }, go_to }: Props) {
+export default function CitedBy({ module: { parents }, go_to }: Props) {
   return h(
     "ul",
     { style: ul_style },
@@ -25,6 +25,7 @@ const li_style = {
 };
 
 const ul_style = {
+  className: "Cited by component",
   padding: 0,
   margin: "5px 0"
 };

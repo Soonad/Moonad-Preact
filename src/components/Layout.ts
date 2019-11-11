@@ -34,25 +34,21 @@ export type SidebarComponents = Array<[string, JSX.Element]>;
 
 export interface LayoutProps {
   main_components: JSX.Element[];
-  sidebar_components: SidebarComponents;
+  console_component: JSX.Element;
   header_components: JSX.Element[];
 }
 
 const Layout = (props: LayoutProps) =>
   h(Box, { vertical: true, style: base_style }, [
     props.header_components,
-    h(Box, { vertical: false, style: body_style }, [
+    h(Box, { vertical: true, style: body_style }, [
       h(
         Box,
         { vertical: true, style: main_style },
         insert_dividers(props.main_components)
       ),
-      h(
-        Box,
-        { vertical: true, style: sidebar_style, grow: false },
-        render_sidebar_components(props.sidebar_components)
-      )
-    ])
+    ]),
+    props.console_component
   ]);
 
 function* intersperse<T>(a: T[], delim: T): IterableIterator<T> {

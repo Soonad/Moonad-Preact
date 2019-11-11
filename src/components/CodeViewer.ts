@@ -59,7 +59,10 @@ const format_term = ({ type, value }: Term): string =>
     .map(x => x.trim())
     .join("\n");
 
-const pre_style = { margin: 0 };
+const pre_style = { 
+  marginLeft: "15%",
+  marginRight: "15%"  
+};
 
 const token_styles = {
   txt: {

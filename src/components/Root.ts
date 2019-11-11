@@ -7,14 +7,17 @@ import RootViewModel from "../view_model/RootViewModel";
 import CitedBy from "./CitedBy";
 import CodeEditor from "./CodeEditor";
 import CodeViewer from "./CodeViewer";
+import Console from "./Console";
 import ErrorReport from "./ErrorReport";
 import Header from "./Header";
-import Layout, { LayoutProps, SidebarComponents } from "./Layout";
+import Layout, { LayoutProps } from "./Layout";
 import PathBar from "./PathBar";
 
 interface RootProps {
   root_view_model: RootViewModel;
 }
+
+export type SidebarComponents = Array<[string, JSX.Element]>;
 
 @observer
 export default class Root extends Component<RootProps> {
@@ -22,7 +25,7 @@ export default class Root extends Component<RootProps> {
     return h(Layout, {
       main_components: this.main_components(this.props.root_view_model),
       header_components: [Header(this.props.root_view_model.go_to)],
-      sidebar_components: this.sidebar_components(this.props.root_view_model)
+      console_component: this.console_component(this.props.root_view_model)
     });
   }
 
@@ -66,6 +69,20 @@ export default class Root extends Component<RootProps> {
     const actions = this.actions(root_view_model);
 
     return [path_bar].concat(actions);
+  }
+
+  private console_component(root_view_model: RootViewModel): JSX.Element {
+    return h(Console, { view_model: root_view_model });
+    // const { module_state, go_to } = root_view_model;
+
+    // switch (module_state.stage) {
+    //   case "failed":
+    //     return h("div", {}, "");
+    //   case "loading":
+    //     return h("div", {}, "");
+    //   case "success":
+    //     return h(Console, { module: module_state.module, go_to });
+    // }
   }
 
   private path(root_view_model: RootViewModel): string {
