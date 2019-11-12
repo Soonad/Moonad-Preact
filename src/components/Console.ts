@@ -1,34 +1,40 @@
-import { h, JSX} from "preact";
+import { h, JSX } from "preact";
+import { useState } from "preact/hooks";
 import CitedBy from "../components/CitedBy";
 import { Module, Term } from "../model";
 
 import LayoutConstants from "../assets/LayoutConstants";
 import RootViewModel from "../view_model/RootViewModel";
+import PathBar from "./PathBar";
+import Root from "./Root";
 
 type GoToCallback = (module_or_term: string) => any;
-// type TabElement = {tab: ConsoleTabs, view: preact.VNode<any> | never[]}
+interface TabElement {tab: ConsoleTabs, view: ViewType}
+type ViewElement = (view_model: RootViewModel) => preact.VNode<any> | undefined;
 
 export interface ConsoleProps {
   view_model: RootViewModel
 }
 
-export default function Console( {view_model}: ConsoleProps ){
-  // const tabs: Array<TabElement> = [
-  //   { tab: { title: "Cited By", onClick: () => {console.log("cited by beign called")} }, 
-  //     view: cited_by_view(view_model)
-  //   },
-  //   { tab: { title: "Check all", onClick: () => {console.log("check all")}},
-  //     view: cited_by_view(view_model)
-  //   }
-  // ]
+type ViewType = "cited_by" | "check_all" | "output";
+
+export default function Console( props: ConsoleProps ){
+  const info: TabElement[] = [
+    { tab: { title: "Cited By", onClick: () => { setState("cited_by") } }, 
+      view: "cited_by"
+    },
+    { tab: { title: "Check all", onClick: () => { setState("check_all") } },
+      view: "check_all"
+    }
+  ]
+  const [view_on_focus, setState] = useState("cited_by");
 
   return h("div", {style: console_style}, [
-    h(ConsoleHeader, {}), 
-    h("div", {style: {marginLeft: "150px"}}, [
-      cited_by_view(view_model)
-    ])
-    
-  ])
+    h(ConsoleHeader, {tabs: info.map( ({tab, view} : TabElement) => tab)}),
+    h("div", {style: {marginLeft: "150px", marginRight: "150px"}}, [
+      h(ConsoleView, {viewType: view_on_focus, viewModel: props.view_model})
+    ])  
+  ]);
 }
 
 const console_style = {
@@ -43,16 +49,14 @@ const console_header_style = {
   height: "30px",
   backgroundColor: "#FFFFFF",
   display: "flex",
-  flexDirection: "row"
+  flexDirection: "row",
+  border: "solid #F2F2F2"
 }
 
-// TODO: passar tabs por parâmetro
-const ConsoleHeader = () => {
+const ConsoleHeader = (props : {tabs: ConsoleTabs[]}) => {
   return h("div", {className: "console header", style: console_header_style}, [
     h("div", {className: "Console tabs div", style: tabs_div_style}, [
-      h(ConsoleTab, {title: "Cited By", onClick: () => {console.log("Cited By")}} ),
-      h(ConsoleTab, {title: "Check all", onClick: () => {console.log("Check all")}} )
-      // render_tabs_components(tabs)
+      render_tabs_components(props.tabs)
     ])
   ])
 }
@@ -85,22 +89,34 @@ const console_tab_style = {
   minWidth: "100px"
 }
 
-const ConsoleView = (cited_by : any) => {
-  return h("div", {style: {marginLeft: "180px"}}, [
-    cited_by
-  ]);
+
+export interface ConsoleView {
+  viewType: string,
+  viewModel: RootViewModel
 }
 
-export type CitedByComponents = Array<[string, JSX.Element]>;
-
-const cited_by_view = ({ editing_state, module_state, go_to}: RootViewModel) => {
-  if (editing_state.editing) {
-    return [];
+const ConsoleView = ( {viewType, viewModel}: ConsoleView ) => {
+  if (viewModel.editing_state.editing) {
+    return h("div", {});
   }
 
+  if (viewModel.module_state.stage === "success") {
+    switch(viewType){
+      case "cited_by":
+        return h(CitedBy, { module: viewModel.module_state.module, go_to: viewModel.go_to });
+      case "check_all":
+        return h("div", {}, "Check all div");
+      case "output":
+        return h("div", {}, "Output div");
+    }
+  }
+
+  return h("div", {});
+}
+
+const cited_by_view = ({ module_state, go_to}: RootViewModel) => {
   if (module_state.stage === "success") {
     return h(CitedBy, { module: module_state.module, go_to });
   }
-
-  return [];
 }
+
