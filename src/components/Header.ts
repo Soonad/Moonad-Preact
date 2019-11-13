@@ -13,7 +13,7 @@ type GoToCallback = (module_or_term: string) => any;
 
 export default function Header(go_to: GoToCallback) {
   return h("div", {style: header_style},
-    h("div", {style: {flexDirection: "row", display: "flex"}}, [
+    h("div", {style: {flexDirection: "row", display: "flex", width: "65%"}}, [
       h("img", {style: logo_style, src: logo, alt: "logo", onClick: () => {go_to("Base@0")} }), 
       h(PathBar, { path: default_path, go_to }),
     ]),

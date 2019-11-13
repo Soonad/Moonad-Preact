@@ -69,8 +69,8 @@ const console_header_style = {
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
-  borderTop: `solid ${LayoutConstants.medium_gray_color} 0.5px`,
-  borderBottom: `solid ${LayoutConstants.medium_gray_color} 0.5px`,
+  borderTop: `solid ${LayoutConstants.medium_gray_color} 1px`,
+  borderBottom: `solid ${LayoutConstants.medium_gray_color} 1px`,
   position: "fixed"
 }
 
@@ -143,8 +143,6 @@ const console_tab_style = {
   paddingTop: "5px",
   height: "100%",
   userSelect: "none",
-  borderTop: `1px solid ${LayoutConstants.medium_gray_color}`,
-  borderBottom: `1px solid ${LayoutConstants.medium_gray_color}`
 }
 
 const console_tab_style_focus = {
@@ -155,7 +153,7 @@ const console_tab_style_focus = {
 const console_tab_style_hover = {
   ...console_tab_style,
   backgroundColor: LayoutConstants.light_gray_shadow_color,
-  height: "100%" 
+  height: "100%",
 }
 
 export interface ConsoleView {

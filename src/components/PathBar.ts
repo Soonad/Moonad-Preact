@@ -1,5 +1,6 @@
 import { h } from "preact";
 import { useRef, useState } from "preact/hooks";
+import { LayoutConstants } from "../assets/Constants";
 import { Module, Token } from "../model";
 
 type GoToCallback = (module_or_term: string) => any;
@@ -29,7 +30,7 @@ export default function PathBar({ path, go_to }: Props) {
     setState({ editing: true, path: "" });
     window.setTimeout(() => input_ref.current && input_ref.current.focus());
   };
-
+  // setState({ editing: true, path: "" });
   const onInput = (e: Event) => {
     const evt = e as InputEvent;
     if (evt.target && state.editing) {
@@ -47,10 +48,11 @@ export default function PathBar({ path, go_to }: Props) {
 
   if (state.editing) {
     return h("input", {
+      type: "text",
       style: input_style,
       value: state.path,
       ref: input_ref,
-      placeholder: "Go to...",
+      placeholder: "Search ...",
       onBlur,
       onKeyPress,
       onInput,
@@ -61,8 +63,8 @@ export default function PathBar({ path, go_to }: Props) {
 }
 
 const style = { 
-  heigth: "30px", 
-  width: "40%", 
+  heigth: "20px", 
+  width: "50%", 
   color: "#FFFFFF",
   marginLeft: "30px",
   marginTop: "35px",
@@ -71,12 +73,12 @@ const style = {
 
 const input_style = {
   ...style,
+  border: "none",
+  borderBottom: `1px solid ${LayoutConstants.light_gray_shadow_color}`,
   outline: "none",
-  marginRight: "6px",
   padding: "5px",
   fontFamily: "monospace",
-  border: "1px #ddd",
-  marginLeft: "20px",
-  marginTop: "20px",
-  marginBottom: "20px",
+  fontColor: LayoutConstants.light_gray_color,
+  marginBottom: "17px",
+  backgroundColor: LayoutConstants.primary_color
 };
