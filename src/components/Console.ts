@@ -2,24 +2,26 @@ import { h, JSX } from "preact";
 import { useState } from "preact/hooks";
 import CitedBy from "../components/CitedBy";
 import { Module, Term } from "../model";
-
-import LayoutConstants from "../assets/LayoutConstants";
-import RootViewModel from "../view_model/RootViewModel";
 import Check_all from "./Check_all";
 import Root from "./Root";
 
+import { ElementsId, LayoutConstants } from "../assets/Constants";
+import btn_close from "../assets/icons/btn_close.png";
+import RootViewModel from "../view_model/RootViewModel";
+
+
 type GoToCallback = (module_or_term: string) => any;
-interface TabElement {tab: ConsoleTabs, view: ViewType}
+interface TabElement {tab: ConsoleTabs, view: View_type}
 type ViewElement = (view_model: RootViewModel) => preact.VNode<any> | undefined;
 
 export interface ConsoleProps {
   view_model: RootViewModel
 }
 
-type ViewType = "cited_by" | "check_all" | "output";
+type View_type = "cited_by" | "check_all" | "output";
 
 export default function Console( props: ConsoleProps ){
-  const [view_on_focus, setState] = useState("check_all");
+  const [view_on_focus, setState] = useState("cited_by");
 
   const info: TabElement[] = [
     { tab: { is_on_focus: true, title: "Cited By", onClick: () => { 
@@ -43,10 +45,10 @@ export default function Console( props: ConsoleProps ){
   ]
   // console.log("Console, on focus: "+view_on_focus);
 
-  return h("div", {style: console_style}, [
+  return h("div", {id: ElementsId.console_id, style: console_style}, [
     h(ConsoleHeader, {tabs: info.map( ({tab, view} : TabElement) => tab), view_on_focus}),
     h("div", {style: {marginLeft: "150px", marginRight: "150px", marginTop: "30px"}}, [
-      h(ConsoleView, {viewType: view_on_focus, view_model: props.view_model})
+      h(ConsoleView, {view_type: view_on_focus, view_model: props.view_model})
     ])
   ]);
 }
@@ -66,17 +68,23 @@ const console_header_style = {
   backgroundColor: "#FFFFFF",
   display: "flex",
   flexDirection: "row",
-  borderTop: "solid #A9A9A9 0.5px",
-  borderBottom: "solid #A9A9A9 0.5px",
+  justifyContent: "space-between",
+  borderTop: `solid ${LayoutConstants.medium_gray_color} 0.5px`,
+  borderBottom: `solid ${LayoutConstants.medium_gray_color} 0.5px`,
   position: "fixed"
 }
 
 const ConsoleHeader = (props : {tabs: ConsoleTabs[], view_on_focus: string}) => {
-  return h("div", {className: "Console header", style: console_header_style}, [
-    h("div", {className: "Console tabs div", style: tabs_div_style}, [
-      render_tabs_components(props.tabs)
-    ]),
+  const on_close_btn = () => {
+    const console_div = document.getElementById(ElementsId.console_id);
+    if (console_div) {
+      console_div.parentNode.removeChild(console_div);
+    }
+  }
 
+  return h("div", {className: "Console header", style: console_header_style}, [
+    h("div", {className: "Console tabs div", style: tabs_div_style}, render_tabs_components(props.tabs)),
+    h(CloseButton, {onClick: on_close_btn})
   ])
 }
 
@@ -92,15 +100,34 @@ export interface ConsoleTabs {
 }
 
 const ConsoleTab = ( {is_on_focus, title, onClick}: ConsoleTabs) => {
+  const [hover, setHover] = useState(false);
+  const style_btn = hover ? console_tab_style_hover : console_tab_style;
   // console.log("Console tab "+title+" is_on_focus?"+is_on_focus);
-  return is_on_focus ? h("div", {onClick, style: console_tab_style_focus}, title) : h("div", {onClick, style: console_tab_style}, title);
+  return is_on_focus ? h("div", {onClick, style: console_tab_style_focus}, title) : 
+                       h("div", {onClick, style: style_btn, onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false)}, title);
 }
 
-const CloseButton = (onClick: () => {}) => {
-  return h("div", {onClick, style: {width: "15px", alignSelf: "center"}}, "x")
+export interface CloseButton {
+  onClick: () => any
+}
+
+const CloseButton = ({ onClick }: CloseButton) => {
+  return h("div", {onClick, style: close_button_style}, [
+    h("img", {src: btn_close, style: {width: "15px", height: "15px"}})
+  ])
+}
+
+const close_button_style = {
+  width: "15px", 
+  height: "15px",
+  alignSelf: "center",
+  cursor: "pointer",
+  marginRight: "150px"
 }
 
 const tabs_div_style = {
+  alignSelf: "center",
+  height: "100%",
   marginLeft: "150px",
   display: "flex", 
   flexDirection: "row",
@@ -112,7 +139,12 @@ const console_tab_style = {
   textAlign: "baseline",
   cursor: "pointer",
   paddingRight: "20px",
-  height: "100%"
+  paddingLeft: "20px",
+  paddingTop: "5px",
+  height: "100%",
+  userSelect: "none",
+  borderTop: `1px solid ${LayoutConstants.medium_gray_color}`,
+  borderBottom: `1px solid ${LayoutConstants.medium_gray_color}`
 }
 
 const console_tab_style_focus = {
@@ -120,12 +152,18 @@ const console_tab_style_focus = {
   borderBottom: "2px solid "+ LayoutConstants.secondary_color
 }
 
+const console_tab_style_hover = {
+  ...console_tab_style,
+  backgroundColor: LayoutConstants.light_gray_shadow_color,
+  height: "100%" 
+}
+
 export interface ConsoleView {
-  viewType: string,
+  view_type: string,
   view_model: RootViewModel
 }
 
-const ConsoleView = ( {viewType, view_model}: ConsoleView ) => {
+const ConsoleView = ( {view_type, view_model}: ConsoleView ) => {
   if (view_model.editing_state.editing) {
     return h("div", {});
   }
@@ -134,7 +172,7 @@ const ConsoleView = ( {viewType, view_model}: ConsoleView ) => {
   const padding_top = "10px";
 
   if (view_model.module_state.stage === "success") {
-    switch(viewType){
+    switch(view_type){
       case "cited_by":
         // This code is here because I'm unable to use it inside a function (?!)
           if (view_model.module_state.stage === "success") {
@@ -156,7 +194,10 @@ const ConsoleView = ( {viewType, view_model}: ConsoleView ) => {
           check_all
         ]);
       case "output":
-        return h("div", {}, "Output div");
+          return h("div", {style: {paddingTop: padding_top}}, [
+            result_aux,
+            h("span", {}, "Output view")
+          ]);
     }
   }
 

@@ -1,5 +1,5 @@
 import { ComponentChildren, h, JSX } from "preact";
-
+import { ElementsId } from "../assets/Constants";
 // Modules to help with layouting
 
 interface StyleArgs {
@@ -39,9 +39,9 @@ export interface LayoutProps {
 }
 
 const Layout = (props: LayoutProps) =>
-  h(Box, { vertical: true, style: base_style }, [
+  h(Box, { id: ElementsId.layout_id, className: "Main element", vertical: true, style: base_style }, [
     props.header_components,
-    h(Box, { vertical: true, style: body_style }, [
+    h(Box, { className: "Code content element", vertical: true, style: body_style }, [
       h(
         Box,
         { vertical: true, style: main_style },
