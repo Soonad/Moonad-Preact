@@ -30,7 +30,8 @@ const header_style = {
   backgroundColor: LayoutConstants.primary_color,
   display: "flex",
   flexDirection: "row",
-  justifyContent: "space-between"
+  justifyContent: "space-between",
+  position: "fixed"
 }
 
 const logo_style = {

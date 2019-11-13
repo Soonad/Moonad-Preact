@@ -60,6 +60,7 @@ const format_term = ({ type, value }: Term): string =>
     .join("\n");
 
 const pre_style = { 
+  paddingTop: "70px",
   marginLeft: "15%",
   marginRight: "15%"  
 };

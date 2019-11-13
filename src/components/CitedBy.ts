@@ -26,6 +26,5 @@ const li_style = {
 
 const ul_style = {
   className: "Cited by component",
-  padding: 0,
-  margin: "5px 0"
+  padding: 0
 };

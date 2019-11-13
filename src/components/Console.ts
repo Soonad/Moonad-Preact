@@ -5,7 +5,7 @@ import { Module, Term } from "../model";
 
 import LayoutConstants from "../assets/LayoutConstants";
 import RootViewModel from "../view_model/RootViewModel";
-import PathBar from "./PathBar";
+import Check_all from "./Check_all";
 import Root from "./Root";
 
 type GoToCallback = (module_or_term: string) => any;
@@ -19,7 +19,7 @@ export interface ConsoleProps {
 type ViewType = "cited_by" | "check_all" | "output";
 
 export default function Console( props: ConsoleProps ){
-  const [view_on_focus, setState] = useState("cited_by");
+  const [view_on_focus, setState] = useState("check_all");
 
   const info: TabElement[] = [
     { tab: { is_on_focus: true, title: "Cited By", onClick: () => { 
@@ -41,11 +41,11 @@ export default function Console( props: ConsoleProps ){
       view: "output"
     }
   ]
-  console.log("Console, on focus: "+view_on_focus);
+  // console.log("Console, on focus: "+view_on_focus);
 
   return h("div", {style: console_style}, [
     h(ConsoleHeader, {tabs: info.map( ({tab, view} : TabElement) => tab), view_on_focus}),
-    h("div", {style: {marginLeft: "150px", marginRight: "150px"}}, [
+    h("div", {style: {marginLeft: "150px", marginRight: "150px", marginTop: "30px"}}, [
       h(ConsoleView, {viewType: view_on_focus, view_model: props.view_model})
     ])
   ]);
@@ -57,17 +57,18 @@ const console_style = {
   width: "100%",
   backgroundColor: LayoutConstants.light_gray_color,
   marginBottom: "0px",
-  // overflow: "scroll"
+  overflow: "scroll"
 }
 
 const console_header_style = {
   height: "30px",
+  width: "100%",
   backgroundColor: "#FFFFFF",
   display: "flex",
   flexDirection: "row",
   borderTop: "solid #A9A9A9 0.5px",
   borderBottom: "solid #A9A9A9 0.5px",
-  // position: "fixed",
+  position: "fixed"
 }
 
 const ConsoleHeader = (props : {tabs: ConsoleTabs[], view_on_focus: string}) => {
@@ -129,21 +130,31 @@ const ConsoleView = ( {viewType, view_model}: ConsoleView ) => {
     return h("div", {});
   }
 
+  const result_aux = h("span", {style: {color: LayoutConstants.secondary_color}}, "► ");
+  const padding_top = "10px";
+
   if (view_model.module_state.stage === "success") {
     switch(viewType){
       case "cited_by":
-        // The code is here because I'm not allowed to do it in a separate function (?!)
-        const qtd = view_model.module_state.module.parents.length;
-        const qtd_result_aux = h("span", {style: {color: LayoutConstants.secondary_color}}, "► ");
-        const qtd_result = h("span", {style: {color: LayoutConstants.dark_gray_color, fontWeight: "bold"}}, qtd > 1? qtd + " results" : qtd + " result");
-        const cited_by = h(CitedBy, { module: view_model.module_state.module, go_to: view_model.go_to });
-
-        return h("div", {style: {marginTop: "10px"}}, [
-          qtd_result_aux, qtd_result,
-          cited_by
-        ]);
+        // This code is here because I'm unable to use it inside a function (?!)
+          if (view_model.module_state.stage === "success") {
+            const qtd = view_model.module_state.module.parents.length;
+            const cited_by_msg = format_console_msg(qtd > 1? qtd + " results" : qtd + " result");
+            const cited_by = h(CitedBy, { module: view_model.module_state.module, go_to: view_model.go_to });
+        
+            return h("div", {style: {paddingTop: padding_top}}, [
+              result_aux, cited_by_msg,
+              cited_by
+            ]);
+          }
+        // return cited_by_view(view_model);
       case "check_all":
-        return h("div", {}, "Check all div");
+        const check_all = h(Check_all, {module: view_model.module_state.module} );
+        const check_all_msg = format_console_msg("Check all terms in "+view_model.module_state.module.path);
+        return h("div", {style: {paddingTop: padding_top}}, [
+          result_aux, check_all_msg,
+          check_all
+        ]);
       case "output":
         return h("div", {}, "Output div");
     }
@@ -152,9 +163,20 @@ const ConsoleView = ( {viewType, view_model}: ConsoleView ) => {
   return h("div", {});
 }
 
-const cited_by_view = ({ module_state, go_to}: RootViewModel) => {
-  if (module_state.stage === "success") {
-    return h(CitedBy, { module: module_state.module, go_to });
-  }
+const format_console_msg = (msg: string) => {
+  return  h("span", {style: {color: LayoutConstants.dark_gray_color, fontWeight: "bold"}}, msg);
 }
 
+// const cited_by_view  = ({ module_state, go_to}: RootViewModel) => {
+//   if (module_state.stage === "success") {
+//     const qtd = module_state.module.parents.length;
+//     const qtd_result_aux = h("span", {style: {color: LayoutConstants.secondary_color}}, "► ");
+//     const qtd_result = h("span", {style: {color: LayoutConstants.dark_gray_color, fontWeight: "bold"}}, qtd > 1? qtd + " results" : qtd + " result");
+//     const cited_by = h(CitedBy, { module: module_state.module, go_to });
+
+//     return h("div", {style: {paddingTop: "10px"}}, [
+//       qtd_result_aux, qtd_result,
+//       cited_by
+//     ]);
+//   }
+// }
