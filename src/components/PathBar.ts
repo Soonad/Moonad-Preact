@@ -30,7 +30,7 @@ export default function PathBar({ path, go_to }: Props) {
     setState({ editing: true, path: "" });
     window.setTimeout(() => input_ref.current && input_ref.current.focus());
   };
-  // setState({ editing: true, path: "" });
+
   const onInput = (e: Event) => {
     const evt = e as InputEvent;
     if (evt.target && state.editing) {
@@ -58,7 +58,6 @@ export default function PathBar({ path, go_to }: Props) {
       onInput,
     });
   }
-
   return h("div", { style, onClick }, path);
 }
 
@@ -74,11 +73,11 @@ const style = {
 const input_style = {
   ...style,
   border: "none",
-  borderBottom: `1px solid ${LayoutConstants.light_gray_shadow_color}`,
+  marginTop: "23px",
+  marginBottom: "5px",
+  // borderBottom: `1px solid ${LayoutConstants.light_gray_shadow_color}`,
   outline: "none",
-  padding: "5px",
   fontFamily: "monospace",
   fontColor: LayoutConstants.light_gray_color,
-  marginBottom: "17px",
-  backgroundColor: LayoutConstants.primary_color
+  backgroundColor: LayoutConstants.primary_shadow_color
 };

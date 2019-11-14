@@ -11,11 +11,16 @@ const default_path = "Base@0";
 
 type GoToCallback = (module_or_term: string) => any;
 
-export default function Header(go_to: GoToCallback) {
+export interface Props {
+  go_to: GoToCallback,
+  path: string
+}
+
+export default function Header({go_to, path}: Props) {
   return h("div", {style: header_style},
     h("div", {style: {flexDirection: "row", display: "flex", width: "65%"}}, [
       h("img", {style: logo_style, src: logo, alt: "logo", onClick: () => {go_to("Base@0")} }), 
-      h(PathBar, { path: default_path, go_to }),
+      h(PathBar, { path, go_to }),
     ]),
     h("div", {clasName: "Buttons div", style: buttons_div_style}, [
       h(Button, {title: "INSPECT", icon: inspect_icon, onClick: inspect_file} ),
@@ -41,13 +46,13 @@ const buttons_div_style = {
   width: "150px",
   flexDirection: "row",
   justifyContent: "space-between",
-  marginRight: "50px",
+  marginRight: "5%",
   userSelect: "none"
 }
 
 const header_style = {
   width: "100%",
-  height: "72px",
+  height: "65px",
   backgroundColor: LayoutConstants.primary_color,
   display: "flex",
   flexDirection: "row",
@@ -58,7 +63,7 @@ const header_style = {
 const logo_style = {
   width: "50px",
   height: "40px",
-  marginTop: 15,
-  marginLeft: 50,
+  marginTop: "13px",
+  marginLeft: "10%",
   cursor: "pointer"
 }

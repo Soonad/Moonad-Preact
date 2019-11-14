@@ -60,9 +60,9 @@ const format_term = ({ type, value }: Term): string =>
     .join("\n");
 
 const pre_style = { 
-  paddingTop: "70px",
-  marginLeft: "15%",
-  marginRight: "15%"  
+  marginTop: "75px",
+  marginLeft: "09%",
+  marginRight: "09%"
 };
 
 const token_styles = {

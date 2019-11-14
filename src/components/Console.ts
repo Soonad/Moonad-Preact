@@ -52,7 +52,7 @@ export default function Console(props: ConsoleProps){
 
   return h("div", {id: ElementsId.console_id, style: console_style}, [
     h(ConsoleHeader, {tabs: tabs.map( ({tab, view} : TabElement) => tab), view_on_focus}),
-    h("div", {style: {marginLeft: "150px", marginRight: "150px", marginTop: "30px"}}, [
+    h("div", {style: {marginLeft: "10%", marginRight: "10%", marginTop: "30px"}}, [
       h(ConsoleView, {view_type: view_on_focus, view_model: props.view_model})
     ])
   ]);
@@ -68,7 +68,7 @@ const console_style = {
 }
 
 const console_header_style = {
-  height: "30px",
+  minHeight: "30px",
   width: "100%",
   backgroundColor: "#FFFFFF",
   display: "flex",
@@ -132,13 +132,13 @@ const close_button_style = {
   height: "15px",
   alignSelf: "center",
   cursor: "pointer",
-  marginRight: "150px"
+  marginRight: "10%"
 }
 
 const tabs_div_style = {
   alignSelf: "center",
   height: "100%",
-  marginLeft: "150px",
+  marginLeft: "10%",
   display: "flex", 
   flexDirection: "row",
   justifyContent: "space-between"
@@ -151,7 +151,7 @@ const console_tab_style = {
   paddingRight: "20px",
   paddingLeft: "20px",
   paddingTop: "5px",
-  height: "100%",
+  minHeight: "30px",
   userSelect: "none",
 }
 
@@ -215,17 +215,3 @@ const ConsoleView = ( {view_type, view_model}: ConsoleView ) => {
 const format_console_msg = (msg: string) => {
   return  h("span", {style: {color: LayoutConstants.dark_gray_color, fontWeight: "bold"}}, msg);
 }
-
-// const cited_by_view  = ({ module_state, go_to}: RootViewModel) => {
-//   if (module_state.stage === "success") {
-//     const qtd = module_state.module.parents.length;
-//     const qtd_result_aux = h("span", {style: {color: LayoutConstants.secondary_color}}, "► ");
-//     const qtd_result = h("span", {style: {color: LayoutConstants.dark_gray_color, fontWeight: "bold"}}, qtd > 1? qtd + " results" : qtd + " result");
-//     const cited_by = h(CitedBy, { module: module_state.module, go_to });
-
-//     return h("div", {style: {paddingTop: "10px"}}, [
-//       qtd_result_aux, qtd_result,
-//       cited_by
-//     ]);
-//   }
-// }

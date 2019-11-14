@@ -48,5 +48,5 @@ const button_text_hover = {
 const icon_style = {
   width: "30px",
   height: "30px",
-  marginTop: "13px"
+  marginTop: "09px"
 }

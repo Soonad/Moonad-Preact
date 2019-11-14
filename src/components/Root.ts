@@ -24,7 +24,7 @@ export default class Root extends Component<RootProps> {
   public render() {
     return h(Layout, {
       main_components: this.main_components(this.props.root_view_model),
-      header_components: [Header(this.props.root_view_model.go_to)],
+      header_components: this.header_component(this.props.root_view_model),
       console_component: this.console_component(this.props.root_view_model)
     });
   }
@@ -53,36 +53,40 @@ export default class Root extends Component<RootProps> {
       return h(CodeEditor, { editing_state });
     }
 
+    const main_component_style = {
+      marginTop: "75px",
+      marginLeft: "10%",
+      marginRight: "10%"
+    }
+
     switch (module_state.stage) {
       case "failed":
-        return h("div", {}, `Failed to load ${module_state.path}`);
+        return h("div", {style: main_component_style}, `Failed to load ${module_state.path}`);
       case "loading":
-        return h("div", {}, "Loading...");
+        return h("div", {style: main_component_style}, "Loading...");
       case "success":
         return h(CodeViewer, { module: module_state.module, go_to });
     }
   }
 
-  private header_components(root_view_model: RootViewModel): JSX.Element[] {
+  private header_component(root_view_model: RootViewModel): JSX.Element {
     const path = this.path(root_view_model);
-    const path_bar = h(PathBar, { path, go_to: root_view_model.go_to });
-    const actions = this.actions(root_view_model);
+    const go_to = root_view_model.go_to;
 
-    return [path_bar].concat(actions);
+    return h(Header, { go_to, path });
   }
 
   private console_component(root_view_model: RootViewModel): JSX.Element {
-    return h(Console, { view_model: root_view_model });
-    // const { module_state, go_to } = root_view_model;
+    const { module_state, go_to } = root_view_model;
 
-    // switch (module_state.stage) {
-    //   case "failed":
-    //     return h("div", {}, "");
-    //   case "loading":
-    //     return h("div", {}, "");
-    //   case "success":
-    //     return h(Console, { module: module_state.module, go_to });
-    // }
+    switch (module_state.stage) {
+      case "failed":
+        return h("div", {}, "");
+      case "loading":
+        return h("div", {}, "");
+      case "success":
+        return h(Console, { view_model: root_view_model });
+    }
   }
 
   private path(root_view_model: RootViewModel): string {
