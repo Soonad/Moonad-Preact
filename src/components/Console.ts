@@ -20,33 +20,38 @@ export interface ConsoleProps {
 
 type View_type = "cited_by" | "check_all" | "output";
 
-export default function Console( props: ConsoleProps ){
+export default function Console(props: ConsoleProps){
   const [view_on_focus, setState] = useState("cited_by");
 
-  const info: TabElement[] = [
-    { tab: { is_on_focus: true, title: "Cited By", onClick: () => { 
-        setState("cited_by"); 
-        // view_on_focus === "cited_by" ? this.is_on_focus = true : this.is_on_focus = false;
-      } }, 
-      view: "cited_by"
+  const tabs : TabElement[] = [
+    {
+      tab: {
+        is_on_focus: view_on_focus === "cited_by",
+        title: "Cited By",
+        onClick: () => setState("cited_by")
+      },
+      view: "cited_by",
     },
-    { tab: { is_on_focus: false, title: "Check all", onClick: () => { 
-        setState("check_all"); 
-        // view_on_focus === "check_all" ? console.log(">>> view_on_focus is check all") : this.is_on_focus = false; 
-      } },
+    {
+      tab: {
+        is_on_focus: view_on_focus === "check_all",
+        title: "Check all",
+        onClick: () => setState("check_all")
+      },
       view: "check_all"
     },
-    { tab: { is_on_focus: false, title: "Output", onClick: () => { 
-        setState("output"); 
-        // view_on_focus === "output" ? this.is_on_focus = true : this.is_on_focus = false; 
-      } },
+    {
+      tab: {
+        is_on_focus: view_on_focus === "output",
+        title: "Output",
+        onClick: () => setState("output")
+      },
       view: "output"
     }
-  ]
-  // console.log("Console, on focus: "+view_on_focus);
+  ];
 
   return h("div", {id: ElementsId.console_id, style: console_style}, [
-    h(ConsoleHeader, {tabs: info.map( ({tab, view} : TabElement) => tab), view_on_focus}),
+    h(ConsoleHeader, {tabs: tabs.map( ({tab, view} : TabElement) => tab), view_on_focus}),
     h("div", {style: {marginLeft: "150px", marginRight: "150px", marginTop: "30px"}}, [
       h(ConsoleView, {view_type: view_on_focus, view_model: props.view_model})
     ])
@@ -77,7 +82,7 @@ const console_header_style = {
 const ConsoleHeader = (props : {tabs: ConsoleTabs[], view_on_focus: string}) => {
   const on_close_btn = () => {
     const console_div = document.getElementById(ElementsId.console_id);
-    if (console_div) {
+    if (console_div && console_div.parentNode) {
       console_div.parentNode.removeChild(console_div);
     }
   }
@@ -102,9 +107,14 @@ export interface ConsoleTabs {
 const ConsoleTab = ( {is_on_focus, title, onClick}: ConsoleTabs) => {
   const [hover, setHover] = useState(false);
   const style_btn = hover ? console_tab_style_hover : console_tab_style;
-  // console.log("Console tab "+title+" is_on_focus?"+is_on_focus);
-  return is_on_focus ? h("div", {onClick, style: console_tab_style_focus}, title) : 
-                       h("div", {onClick, style: style_btn, onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false)}, title);
+  return h("div",
+    {
+      onClick,
+      style: is_on_focus ? console_tab_style_focus : style_btn,
+      onMouseEnter: () => setHover(true),
+      onMouseLeave: () => setHover(false)
+    },
+    title);
 }
 
 export interface CloseButton {
